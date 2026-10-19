@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+
+# React Native / Metro
+.metro/
+*.jsbundle
+*.bundle
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+android/.gradle/
+android/app/build/
+android/build/
+ios/build/
+ios/Pods/
+
+# IDE and editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Test and coverage
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Signing keys and credentials
+*.keystore
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+
+# Local configuration
+local.properties
+
+# Temporary files
+tmp/
+temp/
