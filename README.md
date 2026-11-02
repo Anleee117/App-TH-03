@@ -1,97 +1,141 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# ỨNG DỤNG QUẢN LÝ HỌC TẬP (API & OFFLINE MODE) - THỰC HÀNH 4
 
-# Getting Started
+Ứng dụng React Native quản lý học tập hỗ trợ kết nối REST API qua json-server, lưu trữ bộ nhớ đệm (cache) và hàng đợi thao tác offline (outbox) với cơ chế tự động đồng bộ khi có mạng.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 1. Cài đặt và chuẩn bị môi trường
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+### 1.1. Cài đặt thư viện
+```bash
+npm install
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+### 1.2. Cài đặt và khởi chạy mock API server
+Chạy json-server với file `db.json` và độ trễ 800ms:
+```bash
+npm run server
+```
+hoặc chạy trực tiếp bằng lệnh:
+```bash
+json-server --watch db.json --host 0.0.0.0 --port 3000 --delay 800
 ```
 
-### iOS
+### 1.3. Cấu hình địa chỉ API (src/config.js)
+Mở file `src/config.js` để chỉnh `BASE_URL` phù hợp với thiết bị chạy ứng dụng:
+- **Máy ảo Android**: `http://10.0.2.2:3000`
+- **Máy ảo iOS**: `http://localhost:3000`
+- **Điện thoại thật (Expo Go / Debug build)**: `http://<IP-LAN-may-tinh>:3000` (máy tính và điện thoại cùng mạng Wifi).
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### 1.4. Khởi chạy bằng React Native CLI
+Dự án được cấu hình thuần React Native CLI (không dùng Expo Go):
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+**Bước 1: Chạy Metro bundler:**
+```bash
+npx react-native start
+# hoặc: npm start
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
+**Bước 2: Mở một terminal khác để build và chạy ứng dụng lên máy ảo / thiết bị:**
+- **Trên Android:**
+```bash
+npx react-native run-android
+# hoặc: npm run android
+```
+- **Trên iOS (Mac):**
+```bash
+npx react-native run-ios
+# hoặc: npm run ios
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+> **Mẹo hữu ích khi chạy React Native CLI trên máy thật Android qua cáp USB:**
+> Chạy lệnh reverse cổng để điện thoại gọi trực tiếp vào máy tính qua localhost mà không sợ lệch Wifi:
+> ```bash
+> adb reverse tcp:3000 tcp:3000
+> adb reverse tcp:8081 tcp:8081
+> ```
+> Khi đó trong `src/config.js` có thể để `BASE_URL = 'http://localhost:3000'`.
 
-```sh
-# Using npm
-npm run ios
+---
 
-# OR using Yarn
-yarn ios
+## 2. Sơ đồ luồng dữ liệu
+
+```
++-------------------------------------------------------------------+
+|                        Màn hình (Screens)                         |
+|  HomeScreen, CourseList, Schedule, AssignmentList, Profile...     |
++---------------------------------+---------------------------------+
+                                  |
+                                  v
++---------------------------------+---------------------------------+
+|                        Context & Hooks                            |
+|  - AppDataContext & SyncContext                                   |
+|  - useCachedQuery, useOutboxSync, useNetworkStatus               |
++-----------------+-------------------------------+-----------------+
+                  |                               |
+       (Đọc/Ghi Offline)                 (Gọi API khi Online)
+                  v                               v
++-----------------+---------------+   +-----------+-----------------+
+|        Tầng lưu trữ cục bộ       |   |         Tầng Service        |
+|  - cache.js: getCache, setCache |   |  - studentService, course...|
+|  - outbox.js: enqueue, remove   |   |  - client.js (Timeout 10s)  |
+|    (AsyncStorage)               |   +-----------+-----------------+
++-----------------+---------------+               |
+                  ^                               v
+                  |===================+ (REST API JSON)
+                                      |
+                                      v
+                      +---------------+---------------+
+                      |      Mock Server (json-server) |
+                      |      http://localhost:3000     |
+                      +-------------------------------+
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## 3. Cơ chế xử lý xung đột (Conflict Resolution - Yêu cầu B5)
 
-## Step 3: Modify your app
+Khi ứng dụng hoạt động ở chế độ Offline:
+1. Mọi thao tác thay đổi (đổi trạng thái bài tập, thêm bài tập, chỉnh sửa thông tin cá nhân) đều được ghi vào hàng đợi Outbox trong AsyncStorage dạng:
+   `{ id, method, url, body, createdAt }`
+2. Khi thiết bị kết nối mạng trở lại (`isOnline = true`):
+   - Hook `useOutboxSync` kích hoạt đồng bộ tuần tự (FIFO).
+   - Với thao tác cập nhật thông tin cá nhân (`PATCH /students/1`), trước khi gửi dữ liệu lên server, ứng dụng thực hiện gọi `GET /students/1` để lấy bản ghi hiện tại trên server.
+   - So sánh mốc thời gian: `serverData.updatedAt` và `item.createdAt` (hoặc `item.body.updatedAt`).
+   - **Nếu dữ liệu trên server có `updatedAt` mới hơn thời điểm thao tác offline:**
+     + Ứng dụng ưu tiên giữ dữ liệu server.
+     + Hiển thị thông báo: *"Dữ liệu sinh viên trên máy chủ mới hơn thao tác offline của bạn. Ưu tiên giữ dữ liệu máy chủ."*
+     + Xóa thao tác cũ khỏi hàng đợi outbox để không ghi đè dữ liệu mới của server.
+   - **Nếu thao tác offline mới hơn:**
+     + Ứng dụng gửi `PATCH` bình thường và cập nhật server thành công.
+3. Khi hoàn tất đồng bộ các mục trong hàng đợi, hệ thống hiển thị thông báo: *"Đã đồng bộ X thay đổi"*.
 
-Now that you have successfully run the app, let's make changes!
+---
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## 4. Hướng dẫn kiểm thử 7 kịch bản
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+1. **Kịch bản 1: Tắt json-server rồi mở ứng dụng lần đầu**
+   - Tắt terminal chạy json-server.
+   - Mở ứng dụng lần đầu (khi chưa có cache): Màn hình hiển thị thông báo lỗi kèm nút "Thử lại", ứng dụng không bị dừng/crash.
+2. **Kịch bản 2: Mở ứng dụng khi có mạng, sau đó bật chế độ máy bay và khởi động lại ứng dụng**
+   - Bật json-server, mở ứng dụng để tải dữ liệu và lưu cache.
+   - Bật chế độ máy bay trên thiết bị, tắt hẳn app và mở lại.
+   - Kết quả: Dữ liệu tải từ cache ra ngay lập tức, xuất hiện banner "Bạn đang offline" ở đầu màn hình và dòng "Cập nhật lần cuối: HH:mm, dd/MM/yyyy".
+3. **Kịch bản 3: Khi offline: đánh dấu 2 bài tập đã xong và thêm 1 bài tập mới**
+   - Đang offline: vào tab Bài tập, bấm chuyển trạng thái 2 bài tập (todo -> done) và nhấn "+ Thêm bài tập mới" để thêm 1 bài tập.
+   - Kết quả: Giao diện cập nhật ngay lập tức (optimistic update), các mục này hiển thị nhãn "Chưa đồng bộ". Tab Tổng quan cũng hiển thị số thay đổi chưa đồng bộ.
+4. **Kịch bản 4: Tắt chế độ máy bay**
+   - Tắt chế độ máy bay (kết nối mạng trở lại).
+   - Kết quả: Ứng dụng tự động gửi các yêu cầu trong outbox lên server, hiển thị thông báo "Đã đồng bộ 3 thay đổi", các nhãn "Chưa đồng bộ" biến mất, kiểm tra file `db.json` thấy dữ liệu đã được cập nhật đúng.
+5. **Kịch bản 5: Xung đột cập nhật sinh viên**
+   - Bật chế độ máy bay.
+   - Vào tab Cá nhân -> Chỉnh sửa họ tên thành "Nguyễn Văn Offline" và bấm Lưu.
+   - Mở file `db.json` trên máy tính, sửa `fullName` của student 1 thành "Nguyễn Văn Server" và đổi `updatedAt` thành thời gian tương lai (hoặc thời gian sau thời điểm vừa sửa trên máy).
+   - Tắt chế độ máy bay.
+   - Kết quả: Ứng dụng phát hiện xung đột, hiển thị thông báo cảnh báo và ưu tiên giữ "Nguyễn Văn Server".
+6. **Kịch bản 6: Tìm kiếm hoặc lọc không có kết quả**
+   - Vào tab Môn học, gõ tìm kiếm "XYZ123" hoặc chọn học kỳ không có môn.
+   - Kết quả: Hiển thị EmptyState thân thiện "Không tìm thấy môn học nào".
+7. **Kịch bản 7: Kéo để làm mới**
+   - Tại các màn hình danh sách (Tổng quan, Môn học, Thời khóa biểu, Bài tập, Kết quả học tập), vuốt từ trên xuống.
+   - Kết quả: Vòng xoay xoay tải lại dữ liệu mới nhất từ server và cập nhật lại thời điểm lưu cache.

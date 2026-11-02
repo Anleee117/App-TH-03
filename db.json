@@ -1,0 +1,302 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "studentCode": "SV2021001",
+      "fullName": "Nguyễn Văn Server",
+      "className": "CNTT-K21A",
+      "major": "Công nghệ thông tin",
+      "email": "an.nv@student.edu.vn",
+      "phone": "0912345678",
+      "updatedAt": "2026-12-30T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "studentCode": "SV2021002",
+      "fullName": "Trần Thị Bình",
+      "className": "CNTT-K21A",
+      "major": "Công nghệ thông tin",
+      "email": "binh.tt@student.edu.vn",
+      "phone": "0923456789",
+      "updatedAt": "2026-10-20T08:00:00Z"
+    },
+    {
+      "id": 3,
+      "studentCode": "SV2021003",
+      "fullName": "Lê Hoàng Cường",
+      "className": "CNTT-K21B",
+      "major": "Khoa học máy tính",
+      "email": "cuong.lh@student.edu.vn",
+      "phone": "0934567890",
+      "updatedAt": "2026-10-20T08:00:00Z"
+    },
+    {
+      "id": 4,
+      "studentCode": "SV2021004",
+      "fullName": "Phạm Thu Dung",
+      "className": "CNTT-K21B",
+      "major": "Kỹ thuật phần mềm",
+      "email": "dung.pt@student.edu.vn",
+      "phone": "0945678901",
+      "updatedAt": "2026-10-20T08:00:00Z"
+    },
+    {
+      "id": 5,
+      "studentCode": "SV2021005",
+      "fullName": "Hoàng Minh Đức",
+      "className": "CNTT-K21C",
+      "major": "An toàn thông tin",
+      "email": "duc.hm@student.edu.vn",
+      "phone": "0956789012",
+      "updatedAt": "2026-10-20T08:00:00Z"
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "code": "INT3120",
+      "name": "Phát triển ứng dụng di động",
+      "credits": 3,
+      "lecturer": "TS. Trần Minh",
+      "description": "Lập trình ứng dụng di động đa nền tảng với React Native.",
+      "semester": "HK1 2026-2027"
+    },
+    {
+      "id": 2,
+      "code": "INT201",
+      "name": "Cấu trúc dữ liệu và giải thuật",
+      "credits": 3,
+      "lecturer": "TS. Trần Minh Quân",
+      "description": "Học về các cấu trúc dữ liệu cơ bản mảng, danh sách liên kết, cây và thuật toán.",
+      "semester": "HK1 2026-2027"
+    },
+    {
+      "id": 3,
+      "code": "INT202",
+      "name": "Cơ sở dữ liệu",
+      "credits": 3,
+      "lecturer": "ThS. Lê Thu Hà",
+      "description": "Học về mô hình quan hệ, thiết kế CSDL, SQL và chuẩn hóa dữ liệu.",
+      "semester": "HK1 2026-2027"
+    },
+    {
+      "id": 4,
+      "code": "INT203",
+      "name": "Lập trình hướng đối tượng",
+      "credits": 3,
+      "lecturer": "ThS. Phạm Đức Long",
+      "description": "Học về lớp, đối tượng, kế thừa, đa hình, đóng gói và trừu tượng.",
+      "semester": "HK2 2026-2027"
+    },
+    {
+      "id": 5,
+      "code": "INT301",
+      "name": "Mạng máy tính",
+      "credits": 3,
+      "lecturer": "TS. Võ Thanh Sơn",
+      "description": "Học về mô hình OSI, TCP/IP, địa chỉ IP, định tuyến và các giao thức mạng.",
+      "semester": "HK2 2026-2027"
+    },
+    {
+      "id": 6,
+      "code": "MA201",
+      "name": "Xác suất thống kê",
+      "credits": 2,
+      "lecturer": "TS. Đặng Thị Mai",
+      "description": "Học về biến ngẫu nhiên, phân phối xác suất, ước lượng và kiểm định giả thuyết.",
+      "semester": "HK2 2026-2027"
+    }
+  ],
+  "sessions": [
+    {
+      "id": 1,
+      "courseId": 1,
+      "dayOfWeek": 2,
+      "startTime": "07:00",
+      "endTime": "09:30",
+      "room": "P.301-A2",
+      "note": "Mang laptop"
+    },
+    {
+      "id": 2,
+      "courseId": 2,
+      "dayOfWeek": 3,
+      "startTime": "09:30",
+      "endTime": "12:00",
+      "room": "P.102-A2",
+      "note": "Học lý thuyết"
+    },
+    {
+      "id": 3,
+      "courseId": 3,
+      "dayOfWeek": 4,
+      "startTime": "13:00",
+      "endTime": "15:30",
+      "room": "Lab-01",
+      "note": "Thực hành truy vấn SQL"
+    },
+    {
+      "id": 4,
+      "courseId": 4,
+      "dayOfWeek": 5,
+      "startTime": "07:00",
+      "endTime": "09:30",
+      "room": "P.401-C1",
+      "note": "Mang slide bài giảng"
+    },
+    {
+      "id": 5,
+      "courseId": 5,
+      "dayOfWeek": 6,
+      "startTime": "13:00",
+      "endTime": "16:00",
+      "room": "Lab-02",
+      "note": "Cài sẵn Wireshark"
+    },
+    {
+      "id": 6,
+      "courseId": 1,
+      "dayOfWeek": 7,
+      "startTime": "09:30",
+      "endTime": "11:30",
+      "room": "Lab-03",
+      "note": "Thực hành React Native"
+    }
+  ],
+  "assignments": [
+    {
+      "id": 1,
+      "courseId": 1,
+      "title": "Thực hành 4: API & Offline",
+      "description": "Kết nối API và hỗ trợ chế độ offline.",
+      "dueDate": "2026-11-09T23:59:00Z",
+      "status": "done",
+      "updatedAt": "2026-11-02T07:39:54.202Z"
+    },
+    {
+      "id": 2,
+      "courseId": 2,
+      "title": "Cài đặt Cây nhị phân tìm kiếm",
+      "description": "Cài đặt cây BST và các giải thuật duyệt LNR, NLR.",
+      "dueDate": "2026-11-05T23:59:00Z",
+      "status": "done",
+      "updatedAt": "2026-11-02T09:34:05.262Z"
+    },
+    {
+      "id": 3,
+      "courseId": 3,
+      "title": "Thiết kế mô hình ERD",
+      "description": "Thiết kế thực thể liên kết hệ thống thư viện.",
+      "dueDate": "2026-10-20T23:59:00Z",
+      "status": "done",
+      "updatedAt": "2026-10-18T08:00:00Z"
+    },
+    {
+      "id": 4,
+      "courseId": 4,
+      "title": "Bài tập lớn OOP",
+      "description": "Xây dựng ứng dụng quản lý nhân viên có tính kế thừa.",
+      "dueDate": "2026-11-15T23:59:00Z",
+      "status": "done",
+      "updatedAt": "2026-11-02T09:34:07.013Z"
+    },
+    {
+      "id": 5,
+      "courseId": 5,
+      "title": "Báo cáo mô hình OSI",
+      "description": "Phân tích chức năng các tầng mạng trong mô hình OSI.",
+      "dueDate": "2026-10-15T23:59:00Z",
+      "status": "done",
+      "updatedAt": "2026-11-02T09:18:16.278Z"
+    },
+    {
+      "id": 6,
+      "courseId": 6,
+      "title": "Bài tập Ước lượng và Kiểm định",
+      "description": "Giải bài tập ước lượng tham số và kiểm định phân phối.",
+      "dueDate": "2026-10-28T23:59:00Z",
+      "status": "done",
+      "updatedAt": "2026-11-02T09:18:17.745Z"
+    },
+    {
+      "id": 1793611142812,
+      "courseId": 1,
+      "title": "Bài tập demo offline",
+      "description": "Kiểm tra lưu hàng đợi",
+      "dueDate": "2026-11-20T00:00:00.000Z",
+      "status": "todo",
+      "updatedAt": "2026-11-02T09:19:02.812Z"
+    },
+    {
+      "id": 1793612039114,
+      "courseId": 2,
+      "title": "Bài tập demo offline",
+      "description": "Kiểm tra lưu hàng đợi",
+      "dueDate": "2026-11-20T00:00:00.000Z",
+      "status": "todo",
+      "updatedAt": "2026-11-02T09:33:59.114Z"
+    }
+  ],
+  "grades": [
+    {
+      "id": 1,
+      "courseId": 1,
+      "semester": "HK1 2026-2027",
+      "attendance": 9,
+      "midterm": 7.5,
+      "final": 8.5,
+      "total": 8.25,
+      "letter": "B+"
+    },
+    {
+      "id": 2,
+      "courseId": 2,
+      "semester": "HK1 2026-2027",
+      "attendance": 10,
+      "midterm": 8.5,
+      "final": 9,
+      "total": 8.95,
+      "letter": "A"
+    },
+    {
+      "id": 3,
+      "courseId": 3,
+      "semester": "HK1 2026-2027",
+      "attendance": 8.5,
+      "midterm": 7,
+      "final": 7.5,
+      "total": 7.45,
+      "letter": "B"
+    },
+    {
+      "id": 4,
+      "courseId": 4,
+      "semester": "HK2 2026-2027",
+      "attendance": 9.5,
+      "midterm": 9,
+      "final": 9,
+      "total": 9.05,
+      "letter": "A"
+    },
+    {
+      "id": 5,
+      "courseId": 5,
+      "semester": "HK2 2026-2027",
+      "attendance": 8,
+      "midterm": 6.5,
+      "final": 7,
+      "total": 6.95,
+      "letter": "C+"
+    },
+    {
+      "id": 6,
+      "courseId": 6,
+      "semester": "HK2 2026-2027",
+      "attendance": 9,
+      "midterm": 8,
+      "final": 8,
+      "total": 8.1,
+      "letter": "B+"
+    }
+  ]
+}

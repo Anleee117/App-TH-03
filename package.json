@@ -7,10 +7,12 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
+    "server": "npx -y json-server@0.17.4 --watch db.json --host 0.0.0.0 --port 3000 --delay 800",
     "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-native/new-app-screen": "0.88.0",
     "@react-navigation/bottom-tabs": "^7.21.0",
     "@react-navigation/native": "^7.5.1",
@@ -23,6 +25,7 @@
     "react-native-svg": "^15.16.0"
   },
   "devDependencies": {
+    "json-server": "0.17.4",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
